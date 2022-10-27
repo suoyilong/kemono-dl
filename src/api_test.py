@@ -10,7 +10,7 @@ class ApiTest(unittest.TestCase):
     def getSession(self):
         retries = Retry(
             total = 3,
-            backoff_factor = 0.1,
+            backoff_factor = 1.1,
             status_forcelist = [ 500, 502, 503, 504 ]
         )
         session = requests.Session()
@@ -19,7 +19,7 @@ class ApiTest(unittest.TestCase):
         return session
     def callApi(self, url):
         print(f'Requst {url}')
-        response = self.getSession().get(url=url, headers=self.headers, timeout=self.timeout)
+        response = self.getSession().get(url=url, headers=self.headers, timeout=self.timeout, proxies={"https": "127.0.0.1:7890"})
         if response.status_code == 401:
             raise Exception(f'HTTP 401 bad cookie | {response.status_code} {response.reason}')
         elif not response.ok:
